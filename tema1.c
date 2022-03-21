@@ -11,7 +11,7 @@
 int * get_int_argv(char c_nums[] , char * delimeter);
 int start_process(int prN , int * numbers);
 void print_header(int arr[] , int prN , int n);
-void print_arrLevel(int arr[], int level, int maxPrN , int prN , int n);
+void print_arrLevel(int arr[], int level, int counter , int prN , int n);
 void print_treeMap(int arr[], int prN , int n);
 /*end of prototypes*/
 
@@ -81,28 +81,30 @@ void print_header(int arr[] , int prN , int n){
     int pr_count = 0;
     int i,j;
     int level = 0;
+    int counter = 0;
     while(pr_count < prN){
+        counter = 0;
         for(i = 0 ; i < pow(2 , level) ; i++ ){
             for(j = n/4  ; j >= level ; j--)
                 printf("\t");
             printf("Process %d" , pr_count++);
             if(pr_count >= prN) break;
+            counter++;
         }
         printf("\n");
-        print_arrLevel(arr,level, prN , pr_count , n);
+        print_arrLevel(arr,level, counter , pr_count , n);
         printf("\n");
         level++;
     }
 }
 
-void print_arrLevel(int arr[], int level, int maxPrN , int prN , int n){
+void print_arrLevel(int arr[], int level, int counter , int prN , int n){
     int right = n/pow(2 , level) - 1;
     int left = 0;
     int i;
-    int count;
-    if(maxPrN == prN)
-        
-    while(right < n && count <= maxPrN){
+    int count = 0;
+
+    while(right < n && count <= counter){
         //print tabs
         for(i = n/4 ; i >= level ; i--)
             printf("\t");

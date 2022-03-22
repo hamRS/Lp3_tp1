@@ -7,18 +7,18 @@
 #include<math.h>
 #define DELIMETER ","
 
-
+/*global Variables*/
 int * nums_global;
+int prN;
+int max_processes;
+/*end of global variables*/
 
 /*prototypes*/
 int * get_int_argv(char c_nums[] , char * delimeter);
-int start_process(int prN , int * numbers);
-void print_header(int prN , int n);
-void print_arrLevel(int level, int counter , int prN , int n);
-void print_treeMap( int prN , int n);
-int merge_sort_process(int left , int right , int prN , int maxProcess);
-void merge_process(int left , int middle , int right , int prN);
-
+int start_process(int * numbers);
+void print_header(int n);
+void print_arrLevel(int level, int counter, int n);
+void print_treeMap(int n);
 void print_array(int left , int right);
 /*end of prototypes*/
 
@@ -27,10 +27,12 @@ int main(int argc , char * argv[]){
         fprintf(stderr , "Usage: %s <processes> <numbers>\n", argv[0]);
         return -1;
     }
-    int nbr_processes = atoi(argv[1]);
+    //global number of process
+    max_processes = atoi(argv[1]);
+    prN = 0;
     int * numbers = get_int_argv(argv[2] , DELIMETER);
     if(numbers != NULL && numbers[0] > 1){
-        start_process(nbr_processes , numbers);
+        start_process(numbers);
     }else{
         printf("===esquema de arbol===\n\t\tproceso 0\n");
         printf("\t\t\t%d\n" , numbers[1]);
@@ -66,8 +68,10 @@ int * get_int_argv(char c_nums[] , char * delimeter){
 
 
 
-int start_process(int prN , int * numbers){
+int start_process(int * numbers){
     int i,j;
+    int h = floor(log(prN) / log(2)) + 1;
+    int process_count = 0;
     nums_global = (int *) malloc(sizeof(int)*numbers[i]); 
     for(i = 0 ; i < numbers[0] ; i++)
         nums_global[i] = numbers[i + 1];
@@ -77,18 +81,51 @@ int start_process(int prN , int * numbers){
     //print nums mapping 
     print_treeMap(prN, numbers[0]);
     printf("===mapeos===\n");
-    merge_sort_process(0 , numbers[0] - 1 , 0 , prN );
+    merge_sort_process(0, numbers[0] - 1, 0,&process_count, prN , h);
     return 0;
+}
+void merge_sort_process(pid_t chidlPID , int heigth, int left , int right , int h_max, int flag){
+    
 }
 
 
-int merge_sort_process( int left , int right , int prN , int maxProcess){
-
-    return 0;
+void merge_sort(int left , int right){
+    if(left < right){
+        int p = left + (right - left)/2;
+        merge_sort(left , p);
+        merge_sort(p + 1 , right); 
+        merge(left , p , right);
+    }
 }
 
-void merge_process(int left , int middle , int right , int prN){
-    printf("===procesamiento===\n");
+
+void merge(int left , int middle , int right){
+    int i,j,k;
+    int n1 = middle - left + 1;
+    int n2 = right - middle ;
+    int L[n1] , R[n2];
+    
+    for(i = 0 ; i < n1 ; i++)
+        L[i] = nums_global[left + i];
+    for(j = 0 ; j < n2 ; j++)
+        R[j] = nums_global[middle + 1 + j];
+    
+    i = 0;
+    j = 0;
+    k = left;
+    while(i < n1 && j < n2){
+        if(L[i] <= R[j] )
+            nums_global[k++] = L[i++];
+        else
+            nums_global[k++] = R[j++];
+    }
+
+    while(i < n1)
+        nums_global[k++] = L[i++];
+    while(j < n2)
+        nums_global[k++] = R[j++];
+
+
 }
 
 

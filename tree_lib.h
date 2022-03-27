@@ -1,10 +1,12 @@
+#include<stdio.h>
+#include<stdlib.h>
 /*struct definitions*/
 struct node {
     struct node * left;
     struct node * right;
     int b_full;
     int key;
-}
+};
 /*end structures*/
 
 /*prototypes*/

@@ -1,3 +1,4 @@
+#include "tree_lib.h"
 #include<unistd.h>
 #include<sys/types.h>
 #include<sys/wait.h>
@@ -5,22 +6,22 @@
 #include<string.h>
 #include<stdlib.h>
 #include<math.h>
-#include "tree_lib.h"
 #define DELIMETER ","
 
 /*global Variables*/
-int g_max_process = MAX_PROCESS;
+int g_max_process;
 int g_height;
 int g_size;
 /*end of global variables*/
 
 /*prototypes*/
 int * get_int_argv(char c_nums[] , char * delimeter);
+void generate_arr_for_process(int max_processes , int max_h, int arr[]);
 int start_process(int * numbers);
-void print_array(int left , int right);
 
 void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize);
 void copy(int * arr1 , int * arr2 , int size);
+void print_array(int arr[] , int left , int right);
 /*end of prototypes*/
 
 int main(int argc , char * argv[]){
@@ -29,10 +30,9 @@ int main(int argc , char * argv[]){
         return -1;
     }
     //global number of process
-    max_processes = atoi(argv[1]);
-    prN = 0;
+    g_max_process = atoi(argv[1]);
     int * numbers = get_int_argv(argv[2] , DELIMETER);
-    if(numbers[0] % 2 == 0){ //process number has to form left and right childs
+    if(g_max_process % 2 == 0){ //process number has to form left and right childs
         perror("No se puede dividir el array de forma correcta");
         return -1;
     }
@@ -47,7 +47,6 @@ int main(int argc , char * argv[]){
         printf("---------------------\n");
     }
     free(numbers);
-    free(nums_global);
     return 0;
 }
 
@@ -74,56 +73,23 @@ int * get_int_argv(char c_nums[] , char * delimeter){
 
 int start_process(int * numbers){
     int i,j;
-    int h = floor(log(prN) / log(2)) + 1;
+    int h = floor(log(g_max_process) / log(2)) + 1;
     int process_count = 0;
-    nums_global = (int *) malloc(sizeof(int)*numbers[i]); 
+    int * nums;
+    nums = (int *) malloc(sizeof(int)*numbers[i]); 
     for(i = 0 ; i < numbers[0] ; i++)
-        nums_global[i] = numbers[i + 1];
-       
+        nums[i] = numbers[i + 1];
+    int tree_arr[g_max_process];
+    generate_arr_for_process(g_max_process , h, tree_arr);
+    print_array(tree_arr , 0 , g_max_process -1);
+    printf("/n");
     return 0;
 }
-
-void merge_sort(int left , int right){
-    if(left < right){
-        int p = left + (right - left)/2;
-        merge_sort(left , p);
-        merge_sort(p + 1 , right); 
-        merge(left , p , right);
-    }
-}
-
-void merge(int left , int middle , int right){
-    int i,j,k;
-    int n1 = middle - left + 1;
-    int n2 = right - middle ;
-    int L[n1] , R[n2];
-    
-    for(i = 0 ; i < n1 ; i++)
-        L[i] = nums_global[left + i];
-    for(j = 0 ; j < n2 ; j++)
-        R[j] = nums_global[middle + 1 + j];
-    
-    i = 0;
-    j = 0;
-    k = left;
-    while(i < n1 && j < n2){
-        if(L[i] <= R[j] )
-            nums_global[k++] = L[i++];
-        else
-            nums_global[k++] = R[j++];
-    }
-
-    while(i < n1)
-        nums_global[k++] = L[i++];
-    while(j < n2)
-        nums_global[k++] = R[j++];
-
-
-}
-void print_array( int left , int right){
+/*aux functions*/
+void print_array(int arr[] , int left , int right){
     int i;
-    for(int i = left; i <= right ; i++)
-        printf("%d," , nums_global[i]);
+    for(i = left; i <= right ; i++)
+        printf("%d,", arr[i]);
 }
 
 void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize){
@@ -147,4 +113,12 @@ void copy(int * arr1 , int * arr2 , int size){
 }
 
 
+void generate_arr_for_process(int max_processes , int max_h, int arr[]){
+    struct node * root = NULL;
+    int index = 0;
+    int p_count = 0;
+    createTree(&root , max_processes , &p_count , 0 , max_h );
+    levelOrder(root , arr , &index, max_processes , 0);
+    free(root);
+}
 /*end of aux functions*/

@@ -11,8 +11,8 @@ struct node {
 
 /*prototypes*/
 struct node * new_node(int data);
-void levelOrder(struct node * root , int arr[], int * index , int n, int h);
-void printCurrentLevel(struct node * root, int level, int arr[], int * index);
+void levelOrder(struct node * root , int ** arr, int * index , int n, int h);
+void printCurrentLevel(struct node * root, int level, int ** arr, int * index);
 void createTree(struct node** node, int  max_proces, int * count_proc, int h, int h_max);
 /*end prototypes*/
 
@@ -27,17 +27,18 @@ struct node * new_node(int data){
     return tmp;
 }
 
-void levelOrder(struct node * root , int arr[], int * index , int n, int h){
+void levelOrder(struct node * root , int ** arr, int * index , int n, int h){
     int i;
     for(i = 1 ; i<= h ; i++)
         printCurrentLevel(root , i , arr, index);
 }
 
-void printCurrentLevel(struct node * root, int level, int arr[], int * index){
+void printCurrentLevel(struct node * root, int level, int ** arr, int * index){
     if(root == NULL)
         return;
     if(level == 1){
-        arr[((*index)++)] = root->key;
+        int * tmp = *arr;
+        tmp[((*index)++)] = root->key;
     }else if(level > 1){
         printCurrentLevel(root->left, level - 1 , arr, index);
         printCurrentLevel(root->right, level - 1 , arr, index);

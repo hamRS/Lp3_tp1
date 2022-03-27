@@ -16,7 +16,7 @@ int g_size;
 
 /*prototypes*/
 int * get_int_argv(char c_nums[] , char * delimeter);
-void generate_arr_for_process(int max_processes , int max_h, int arr[]);
+int * generate_arr_for_process(int max_processes , int max_h);
 int start_process(int * numbers);
 
 void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize);
@@ -75,14 +75,12 @@ int start_process(int * numbers){
     int i,j;
     int h = floor(log(g_max_process) / log(2)) + 1;
     int process_count = 0;
-    int * nums;
-    nums = (int *) malloc(sizeof(int)*numbers[i]); 
+    int * nums = nums = (int *) malloc(sizeof(int)*numbers[0]); 
     for(i = 0 ; i < numbers[0] ; i++)
         nums[i] = numbers[i + 1];
-    int tree_arr[g_max_process];
-    generate_arr_for_process(g_max_process , h, tree_arr);
+    int * tree_arr = generate_arr_for_process(g_max_process , h);
     print_array(tree_arr , 0 , g_max_process -1);
-    printf("/n");
+    printf("\n");
     return 0;
 }
 /*aux functions*/
@@ -113,12 +111,14 @@ void copy(int * arr1 , int * arr2 , int size){
 }
 
 
-void generate_arr_for_process(int max_processes , int max_h, int arr[]){
+int * generate_arr_for_process(int max_processes , int max_h){
     struct node * root = NULL;
     int index = 0;
     int p_count = 0;
+    int * arr = (int *) malloc(sizeof(int)*max_processes);
     createTree(&root , max_processes , &p_count , 0 , max_h );
-    levelOrder(root , arr , &index, max_processes , 0);
+    levelOrder(root , &arr , &index, max_processes , max_h);
     free(root);
+    return arr;
 }
 /*end of aux functions*/

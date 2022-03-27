@@ -5,21 +5,22 @@
 #include<string.h>
 #include<stdlib.h>
 #include<math.h>
+#include "tree_lib.h"
 #define DELIMETER ","
 
 /*global Variables*/
-int * nums_global;
-int prN;
-int max_processes;
+int g_max_process = MAX_PROCESS;
+int g_height;
+int g_size;
 /*end of global variables*/
 
 /*prototypes*/
 int * get_int_argv(char c_nums[] , char * delimeter);
 int start_process(int * numbers);
-void print_header(int n);
-void print_arrLevel(int level, int counter, int n);
-void print_treeMap(int n);
 void print_array(int left , int right);
+
+void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize);
+void copy(int * arr1 , int * arr2 , int size);
 /*end of prototypes*/
 
 int main(int argc , char * argv[]){
@@ -31,6 +32,11 @@ int main(int argc , char * argv[]){
     max_processes = atoi(argv[1]);
     prN = 0;
     int * numbers = get_int_argv(argv[2] , DELIMETER);
+    if(numbers[0] % 2 == 0){ //process number has to form left and right childs
+        perror("No se puede dividir el array de forma correcta");
+        return -1;
+    }
+
     if(numbers != NULL && numbers[0] > 1){
         start_process(numbers);
     }else{
@@ -45,7 +51,7 @@ int main(int argc , char * argv[]){
     return 0;
 }
 
-
+/*main functions*/
 int * get_int_argv(char c_nums[] , char * delimeter){
     if(c_nums == NULL || strlen(c_nums) == 0)
         return NULL;
@@ -66,8 +72,6 @@ int * get_int_argv(char c_nums[] , char * delimeter){
     return numbers;
 }
 
-
-
 int start_process(int * numbers){
     int i,j;
     int h = floor(log(prN) / log(2)) + 1;
@@ -75,20 +79,10 @@ int start_process(int * numbers){
     nums_global = (int *) malloc(sizeof(int)*numbers[i]); 
     for(i = 0 ; i < numbers[0] ; i++)
         nums_global[i] = numbers[i + 1];
-    int left,right;
-
-    printf("===Esquema de arbol===\n");
-    //print nums mapping 
-    print_treeMap(prN, numbers[0]);
-    printf("===mapeos===\n");
-    merge_sort_process(0, numbers[0] - 1, 0,&process_count, prN , h);
+       
     return 0;
 }
-void merge_sort_process(pid_t chidlPID , int heigth, int left , int right , int h_max, int flag){
-    
-}
 
-/*aux functions*/
 void merge_sort(int left , int right){
     if(left < right){
         int p = left + (right - left)/2;
@@ -97,7 +91,6 @@ void merge_sort(int left , int right){
         merge(left , p , right);
     }
 }
-
 
 void merge(int left , int middle , int right){
     int i,j,k;
@@ -131,10 +124,27 @@ void print_array( int left , int right){
     int i;
     for(int i = left; i <= right ; i++)
         printf("%d," , nums_global[i]);
-    printf("\n");
 }
 
-void print_treeMap(int prN , int n){
-    print_header(prN , n);
+void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize){
+    int i,j,k;
+    j = i = k = 0;
+    while(j < rightSize && i < leftSize){
+        if(first[i] < second[j])
+            combined[k++] = first[i++];
+        else
+            combined[k++] = second[j++];
+    }
+    while(i < leftSize)
+        combined[k++] = first[i++];
+    while(j < rightSize)
+        combined[k++] = second[j++];
+}   
+void copy(int * arr1 , int * arr2 , int size){
+    int i;
+    for(i = 0 ; i < size ; i++)
+        arr1[i] = *(arr2 + i);
 }
+
+
 /*end of aux functions*/

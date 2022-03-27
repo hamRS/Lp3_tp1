@@ -88,7 +88,7 @@ void merge_sort_process(pid_t chidlPID , int heigth, int left , int right , int 
     
 }
 
-
+/*aux functions*/
 void merge_sort(int left , int right){
     if(left < right){
         int p = left + (right - left)/2;
@@ -127,8 +127,6 @@ void merge(int left , int middle , int right){
 
 
 }
-
-
 void print_array( int left , int right){
     int i;
     for(int i = left; i <= right ; i++)
@@ -139,46 +137,4 @@ void print_array( int left , int right){
 void print_treeMap(int prN , int n){
     print_header(prN , n);
 }
-
-
-void print_header(int prN , int n){
-    int pr_count = 0;
-    int i,j;
-    int level = 0;
-    int counter = 0;
-    while(pr_count < prN){
-        counter = 0;
-        for(i = 0 ; i < pow(2 , level) ; i++ ){
-            for(j = n/4  ; j >= level ; j--) //print tabs
-                printf("\t");
-            printf("Process %d" , pr_count++);
-            if(pr_count >= prN) break;
-            counter++;
-        }
-        printf("\n");
-        print_arrLevel(level, counter , pr_count , n);
-        printf("\n");
-        level++;
-    }
-}
-
-void print_arrLevel( int level, int counter , int prN , int n){
-    int right = n/pow(2 , level) - 1;
-    int left = 0;
-    int i;
-    int count = 0;
-
-    while(right < n && count <= counter){
-        //print tabs
-        for(i = n/4; i >= level ; i--)
-            printf("\t");
-        //print arr
-        for(i = left ; i <= right ; i++)
-            printf("%d," , nums_global[i]);
-        left = i;
-        right += n/pow(2 , level);
-        if(right >= n && left < n)
-            right = n - 1;
-        count++;
-    }
-}
+/*end of aux functions*/

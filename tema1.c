@@ -22,6 +22,8 @@ int start_process(int * numbers);
 void merge_sort_p(int first[] , int second[] , int combined[] ,int leftSize , int rightSize);
 void copy(int * arr1 , int * arr2 , int size);
 void print_array(int arr[] , int left , int right);
+void print_arrLevel( int level, int counter , int prN , int n, int nums[]);
+void print_header(int proc_pattern[], int nums[] , int n);
 /*end of prototypes*/
 
 int main(int argc , char * argv[]){
@@ -79,10 +81,14 @@ int start_process(int * numbers){
     for(i = 0 ; i < numbers[0] ; i++)
         nums[i] = numbers[i + 1];
     int * tree_arr = generate_arr_for_process(g_max_process , h);
-    print_array(tree_arr , 0 , g_max_process -1);
+    printf("===Esquema de arbol===\n");
+    print_header(tree_arr , nums, numbers[0]);
     printf("\n");
+    printf("===Mapeos===\n");
     return 0;
 }
+/*end of main functions*/
+
 /*aux functions*/
 void print_array(int arr[] , int left , int right){
     int i;
@@ -120,5 +126,48 @@ int * generate_arr_for_process(int max_processes , int max_h){
     levelOrder(root , &arr , &index, max_processes , max_h);
     free(root);
     return arr;
+}
+
+
+void print_header(int proc_pattern[], int nums[] , int n){
+    int index = 0;
+    int i,j;
+    int level = 0;
+    int counter = 0;
+    while(index < g_max_process){
+        counter = 0;
+        for(i = 0 ; i < pow(2 , level) ; i++ ){
+            for(j = n/4  ; j >= level ; j--) //print tabs
+                printf("\t");
+            printf("Process %d" , proc_pattern[index++]);
+            if(index >= g_max_process) break;
+            counter++;
+        }
+        printf("\n");
+        print_arrLevel(level, counter , index, n , nums);
+        printf("\n");
+        level++;
+    }
+}
+
+void print_arrLevel( int level, int counter , int prN , int n, int nums[]){
+    int right = n/pow(2 , level) - 1;
+    int left = 0;
+    int i;
+    int count = 0;
+
+    while(right < n && count <= counter){
+        //print tabs
+        for(i = n/4; i >= level ; i--)
+            printf("\t");
+        //print arr
+        for(i = left ; i <= right ; i++)
+            printf("%d," , nums[i]);
+        left = i;
+        right += n/pow(2 , level);
+        if(right >= n && left < n)
+            right = n - 1;
+        count++;
+    }
 }
 /*end of aux functions*/

@@ -24,6 +24,7 @@ void copy(int * arr1 , int * arr2 , int size);
 void print_array(int arr[] , int left , int right);
 void print_arrLevel( int level, int counter , int prN , int n, int nums[]);
 void print_header(int proc_pattern[], int nums[] , int n);
+void print_process_maps(int arr[], int size , int * index, int h);
 /*end of prototypes*/
 
 int main(int argc , char * argv[]){
@@ -75,16 +76,18 @@ int * get_int_argv(char c_nums[] , char * delimeter){
 
 int start_process(int * numbers){
     int i,j;
-    int h = floor(log(g_max_process) / log(2)) + 1;
+    g_height = floor(log(g_max_process) / log(2)) + 1;
     int process_count = 0;
     int * nums = nums = (int *) malloc(sizeof(int)*numbers[0]); 
     for(i = 0 ; i < numbers[0] ; i++)
         nums[i] = numbers[i + 1];
-    int * tree_arr = generate_arr_for_process(g_max_process , h);
+    int * tree_arr = generate_arr_for_process(g_max_process , g_height);
+    int tree_index = 0;
     printf("===Esquema de arbol===\n");
     print_header(tree_arr , nums, numbers[0]);
     printf("\n");
     printf("===Mapeos===\n");
+    print_process_maps(nums, numbers[0] , &tree_index , 0);
     return 0;
 }
 /*end of main functions*/
@@ -168,6 +171,29 @@ void print_arrLevel( int level, int counter , int prN , int n, int nums[]){
         if(right >= n && left < n)
             right = n - 1;
         count++;
+    }
+}
+
+
+void print_process_maps(int arr[], int size , int * index, int h){
+    if(*index < g_max_process && h < g_height){
+        printf("Proceso %d: " , *index);
+        print_array(arr , 0 , size - 1);
+        printf("\n");
+        int leftSize, rightSize;
+        if(size % 2 != 0){
+            leftSize = size/2;
+            rightSize = leftSize + 1;
+        }else
+            leftSize = rightSize = size /2;
+        
+        int left_arr[leftSize];
+        int right_arr[rightSize];
+        copy(left_arr , arr , leftSize);
+        copy(right_arr , arr + leftSize, rightSize);
+        (*index)++;
+        print_process_maps(left_arr , leftSize , index , h + 1 );
+        print_process_maps(right_arr , rightSize , index , h + 1 );
     }
 }
 /*end of aux functions*/
